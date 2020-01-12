@@ -6,7 +6,7 @@
     "node": "12.x"
   },
   "scripts": {
-    "dev": "concurrently -k \"micro -l tcp://localhost:3001 scripts/list-files.js\" \"next dev\"",
+    "dev": "next dev",
     "build": "git status && next build",
     "start": "NODE_ENV=production next start",
     "postinstall": "yarn patch-package"
@@ -33,8 +33,8 @@
     "autoprefixer": "^9.7.2",
     "babel-plugin-import-glob-array": "^0.2.0",
     "concurrently": "^5.0.2",
-    "micro": "^9.3.4",
-    "next-mdx-enhanced": "^2.2.1",
+    "lodash": "^4.17.15",
+    "next-mdx-enhanced": "^2.3.0",
     "patch-package": "^6.2.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",

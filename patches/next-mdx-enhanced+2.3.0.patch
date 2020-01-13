@@ -1,12 +1,100 @@
 diff --git a/node_modules/next-mdx-enhanced/loader.js b/node_modules/next-mdx-enhanced/loader.js
-index 0117d34..d63b298 100644
+index 0117d34..fb4cc24 100644
 --- a/node_modules/next-mdx-enhanced/loader.js
 +++ b/node_modules/next-mdx-enhanced/loader.js
-@@ -120,6 +120,7 @@ async function processLayout(options, frontMatter, content, resourcePath, scans)
+@@ -60,14 +60,32 @@ function scanContent(options, content) {
+ async function processLayout(options, frontMatter, content, resourcePath, scans) {
+   const { mdxEnhancedPluginOptions: pluginOpts } = options
+ 
++  const extendedFm = await extendFrontMatter({
++    content,
++    frontMatter: {
++      ...frontMatter,
++      __resourcePath: resourcePath,
++      __scans: scans
++    },
++    phase: 'loader',
++    extendFm: pluginOpts.extendFrontMatter
++  })
++
++  const mergedFrontMatter = {
++    ...frontMatter,
++    ...extendedFm,
++      __resourcePath: resourcePath,
++      __scans: scans
++  }
++
+   // If no layout is provided and the default layout setting is not on, return the
+   // content directly.
+-  if (!frontMatter.layout && !pluginOpts.defaultLayout)
++  if (!mergedFrontMatter.layout && !pluginOpts.defaultLayout)
+     return content
+ 
+   // Set the default if the option is active and there's no layout
+-  if (!frontMatter.layout && pluginOpts.defaultLayout) {
+-    frontMatter.layout = 'index'
++  if (!mergedFrontMatter.layout && pluginOpts.defaultLayout) {
++    mergedFrontMatter.layout = 'index'
+   }
+ 
+   // Layouts default to resolving from "<root>/layouts", but this is configurable.
+@@ -76,7 +94,7 @@ async function processLayout(options, frontMatter, content, resourcePath, scans)
+   const layoutPath = path.resolve(
+     options.dir,
+     pluginOpts.layoutPath,
+-    frontMatter.layout
++    mergedFrontMatter.layout
+   )
+ 
+   // If the layout doesn't exist, throw a descriptive error
+@@ -86,16 +104,6 @@ async function processLayout(options, frontMatter, content, resourcePath, scans)
+     '|'
+   )})`
+ 
+-  const extendedFm = await extendFrontMatter({
+-    content,
+-    frontMatter: {
+-      ...frontMatter,
+-      __resourcePath: resourcePath,
+-      __scans: scans
+-    },
+-    phase: 'loader',
+-    extendFm: pluginOpts.extendFrontMatter
+-  })
+ 
+   const matches = await new Promise((resolve, reject) => {
+     glob(layoutMatcher, (err, matches) => err ? reject(err) : resolve(matches))
+@@ -103,16 +111,14 @@ async function processLayout(options, frontMatter, content, resourcePath, scans)
+ 
+   if (!matches.length) {
+     throw new Error(
+-      `File "${resourcePath}" specified "${frontMatter.layout}" as its layout, but no matching file was found at "${layoutMatcher}"`
++      `File "${resourcePath}" specified "${mergedFrontMatter.layout}" as its layout, but no matching file was found at "${layoutMatcher}"`
+     )
+   }
+ 
+   const { onContent } = pluginOpts
+   if (onContent && this._compiler.name === 'server') {
+     onContent({
+-      ...frontMatter,
+-      ...extendedFm,
+-      ...{ __resourcePath: resourcePath },
++      ...mergedFrontMatter,
+       content
+     })
+   }
+@@ -120,12 +126,8 @@ async function processLayout(options, frontMatter, content, resourcePath, scans)
    // Import the layout, export the layout-wrapped content, pass front matter into layout
    return `import layout from '${normalizeToUnixPath(layoutPath)}'
  
-+export * from '${normalizeToUnixPath(layoutPath)}'      
- export default layout(${stringifyObject({
-     ...frontMatter,
-     ...extendedFm,
+-export default layout(${stringifyObject({
+-    ...frontMatter,
+-    ...extendedFm,
+-    ...{ __resourcePath: resourcePath },
+-    ...{ __scans: scans }
+-  })})
++export * from '${normalizeToUnixPath(layoutPath)}'
++export default layout(${stringifyObject(mergedFrontMatter)})
+ 
+ ${content}
+ `

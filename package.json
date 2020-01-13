@@ -11,6 +11,9 @@
     "start": "NODE_ENV=production next start",
     "postinstall": "yarn patch-package"
   },
+  "resolutions": {
+    "@mdx-js/loader": "1.5.3"
+  },
   "dependencies": {
     "import-modules": "^2.0.0",
     "isomorphic-unfetch": "^3.0.0",

@@ -1,37 +1,26 @@
-const { lowerCase } = require("lodash");
 const path = require("path");
+const fs = require("fs");
+const processing = require("./processing");
 
 const withMDX = require("next-mdx-enhanced")({
   defaultLayout: true,
   extendFrontMatter: {
-    process: (_, { __resourcePath, ...otherMatters }) => {
-      if (__resourcePath.startsWith("docs/")) {
-        let newPath = __resourcePath.slice("docs/".length);
-        newPath = newPath.split("/");
-
-        let section = {};
-        let file = "";
-        if (newPath.length > 2) {
-          console.log("uh oh!");
-          throw new Error("Only one directory sublevel supported in docs");
-        } else if (newPath.length === 1) {
-          file = newPath[0];
-        } else {
-          section = { section: lowerCase(newPath[0]) };
-          file = newPath[1];
+    process: processing((_, frontMatter) => {
+      const { __resourcePath, layout } = frontMatter;
+      if (!layout) {
+        const defaultLayout = __resourcePath.split("/")[0];
+        if (
+          fs.existsSync(
+            path.join(process.cwd(), `layouts/${defaultLayout}.tsx`)
+          )
+        ) {
+          return {
+            layout: defaultLayout
+          };
         }
-        let out = {
-          title: lowerCase(path.parse(file).name),
-          ...section,
-          ...otherMatters,
-          __resourcePath
-        };
-        console.log("OUT", out);
-        return out;
       }
-      return;
-    },
-    phase: "prebuild"
+    }),
+    phase: "both"
   }
 });
 const withCSS = require("@zeit/next-css");

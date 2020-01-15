@@ -15,9 +15,9 @@ export default frontMatter => {
           <ContentNavigator
             currentPage={frontMatter.href}
             entries={groupBy(docs, "section")}
-            className="pt-8 border-r border-gray-200"
+            className="pt-8 border-r border-gray-200 flex-none"
           />
-          <article className="pt-6 pl-5">
+          <article className="pt-6 px-5">
             <h1>{frontMatter.title}</h1>
             <section className="text-justify">{children}</section>
           </article>

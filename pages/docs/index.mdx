@@ -2,6 +2,10 @@
 title: Introduction
 ---
 
-GraphLog is a service that provides usage analytics and performance timing for graphql services. This allows provides you with field level information
-such as which depricated fields are safe to remove and which fields are slowing down a query. GraphLog is built to be server implementation agnostic so you
-should be able to integrate it with any graphql server implementation.
+One of GraphQL's largest potential strengths is the usage level insight you can get on individual fields in a query. Surprisingly, there aren't many tools
+on the market to help you get this data. Your primary choice is to use apollo server alongside the apollo platform. If you're not in the JS ecosystem or you
+don't want to use apollo otherwise, that leaves you without many options.
+
+Enter GraphLog. GraphLog is an open source, self hostable platform for gathering graphql usage data. It allows you to easily determine which depricated
+fields are safe to remove or see which fields should be optimized for performance. It's designed to be extendable to work across _all_ major graphql server
+implementations.

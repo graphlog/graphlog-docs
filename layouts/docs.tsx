@@ -13,6 +13,7 @@ export default frontMatter => {
         <Header />
         <div className="flex h-full">
           <ContentNavigator
+            currentPage={frontMatter.href}
             entries={groupBy(docs, "section")}
             className="pt-8 border-r border-gray-200"
           />

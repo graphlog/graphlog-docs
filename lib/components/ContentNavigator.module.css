@@ -1,0 +1,8 @@
+.item:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.activeItem {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  font-weight: inherit !important;
+}

@@ -1,5 +1,6 @@
 import React from "react";
-import { Header } from "../lib/components/Header";
+import { Header, Sidebar, Segment, Container } from "semantic-ui-react";
+import { NavBar } from "../lib/components/NavBar";
 import { ContentNavigator } from "../lib/components/ContentNavigator";
 import { groupBy } from "lodash";
 
@@ -10,18 +11,19 @@ export default frontMatter => {
   return ({ children }) => {
     return (
       <main className="h-full font-sans">
-        <Header />
-        <div className="flex h-full">
+        <NavBar />
+        <Sidebar.Pushable as={Segment} basic style={{ margin: 0 }}>
           <ContentNavigator
             currentPage={frontMatter.href}
             entries={groupBy(docs, "section")}
-            className="pt-8 border-r border-gray-200 flex-none"
           />
-          <article className="pt-6 px-5">
-            <h1>{frontMatter.title}</h1>
-            <section className="text-justify">{children}</section>
-          </article>
-        </div>
+          <Sidebar.Pusher>
+            <Segment basic as="article">
+              <Header as="h1">{frontMatter.title}</Header>
+              <section className="text-justify">{children}</section>
+            </Segment>
+          </Sidebar.Pusher>
+        </Sidebar.Pushable>
       </main>
     );
   };

@@ -34,7 +34,7 @@
     "babel-plugin-import-glob-array": "^0.2.0",
     "babel-plugin-transform-semantic-ui-react-imports": "^1.4.1",
     "concurrently": "^5.0.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "next-mdx-enhanced": "^2.3.0",
     "patch-package": "^6.2.0",
     "react": "^16.12.0",
